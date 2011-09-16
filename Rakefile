@@ -3,7 +3,9 @@ require 'rubygems/package_task'
 
 task :default => :test
 
-Rake::TestTask.new do |t|
+Rake::TestTask.new(:test) do |t|
+  t.test_files = Dir.glob("test/**/*_test.rb")
+  t.verbose = true
   t.warning = true
 end
 
