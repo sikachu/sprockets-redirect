@@ -1,7 +1,9 @@
 require 'sprockets/redirect'
-
 require 'test/unit'
 require 'rack/test'
+require 'active_support'
+
+puts ">> Testing against Rails #{ActiveSupport::VERSION::STRING}"
 
 class TestRedirect < Test::Unit::TestCase
   include Rack::Test::Methods
