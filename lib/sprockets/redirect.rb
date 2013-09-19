@@ -55,7 +55,7 @@ module Sprockets
     end
 
     def call(env)
-      if self.class.enabled && @digests.present? && asset_match?(env)
+      if self.class.enabled && !@digests.empty? && asset_match?(env)
         redirect_to_digest_version(env)
       else
         @app.call(env)
@@ -73,7 +73,7 @@ module Sprockets
     # Sends a redirect header back to browser
     def redirect_to_digest_version(env)
       url = URI(@request.url)
-      filename = @digests[@request.path.sub("#{@prefix}/", "")].digest_path
+      filename = @digests[@request.path.sub("#{@prefix}/", "")]
       url.path = "#{@prefix}/#{filename}"
       headers = { 'Location'      => url.to_s,
                   'Content-Type'  => Rack::Mime.mime_type(::File.extname(filename)),
