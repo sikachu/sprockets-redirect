@@ -81,6 +81,18 @@ class TestRedirect < Test::Unit::TestCase
       last_response.headers['Location']
   end
 
+  def test_setting_manifest_with_json_file
+    old_manifest = Sprockets::Redirect.manifest
+    fixture_file = File.expand_path(File.dirname(__FILE__) + '/fixtures/manifest.json')
+    Sprockets::Redirect.manifest = fixture_file.to_s
+    get "http://example.org/assets/application.js"
+    assert_equal "http://example.org/assets/application-l33t.js",
+      last_response.headers['Location']
+  ensure
+    Sprockets::Redirect.manifest = old_manifest
+  end
+
+
   def test_set_enabled_to_false
     old_enabled = Sprockets::Redirect.enabled
     Sprockets::Redirect.enabled = false
