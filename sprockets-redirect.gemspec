@@ -24,9 +24,11 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rack'
   s.add_dependency 'activesupport', '>= 3.1.0'
+  s.add_development_dependency 'appraisal'
   s.add_development_dependency 'bundler'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rack-test'
+  s.add_development_dependency 'json'
 
   s.authors           = ["Prem Sichanugrist"]
   s.email             = "s@sikac.hu"

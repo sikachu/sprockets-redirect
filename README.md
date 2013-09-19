@@ -75,6 +75,8 @@ Contributing
 
 If you found any bug or would like to request a feature, please use Github's [issue tracker](https://github.com/sikachu/sprockets-redirect/issues) to report them. [Pull requests](https://github.com/sikachu/sprockets-redirect/pulls) are always welcomed if you also want to help me fix it. Please make sure to include a test to make sure that I don't break it in the future.
 
+Also, you should run `rake test_all` to run the test against multiple versions of Ruby. We're currently testing against Rails 3.1, 3.2 and 4.0
+
 
 License
 -------

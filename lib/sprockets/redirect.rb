@@ -3,6 +3,7 @@ require 'rack/request'
 require 'rack/mime'
 require 'active_support/core_ext/class/attribute'
 require 'yaml'
+require 'json'
 
 module Sprockets
   # A Rack middleware for Rails >= 3.1.0 with asset pipeline and asset digest
@@ -42,7 +43,14 @@ module Sprockets
       @digests = options[:digests] || nil
       @prefix = options[:prefix] || "/assets"
       if manifest = options[:manifest] || self.class.manifest
-        @digests = YAML.load_file manifest
+        case File.extname(manifest)
+        when ".yml"
+          @digests = YAML.load_file(manifest)
+        when ".json"
+          @digests = {}
+          #Rails 4 uses json manifest files which are formatted differently.
+         JSON.parse(File.read(manifest))["files"].collect{|f, g| @digests[g["logical_path"]] = f}
+        end
       end
     end
 
