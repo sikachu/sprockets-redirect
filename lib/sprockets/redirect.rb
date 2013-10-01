@@ -1,7 +1,7 @@
 require 'rack'
 require 'rack/request'
 require 'rack/mime'
-require 'active_support/core_ext/class/attribute'
+require 'active_support/all'
 require 'yaml'
 require 'json'
 
@@ -42,6 +42,10 @@ module Sprockets
       @app = app
       @digests = options[:digests] || nil
       @prefix = options[:prefix] || "/assets"
+      @sprockets = options[:sprockets] || nil
+
+      @digests ||= @sprockets
+
       if manifest = options[:manifest] || self.class.manifest
         case File.extname(manifest)
         when ".yml"
@@ -55,7 +59,7 @@ module Sprockets
     end
 
     def call(env)
-      if self.class.enabled && !@digests.empty? && asset_match?(env)
+      if self.class.enabled && @digests.present? && asset_match?(env)
         redirect_to_digest_version(env)
       else
         @app.call(env)
@@ -74,6 +78,11 @@ module Sprockets
     def redirect_to_digest_version(env)
       url = URI(@request.url)
       filename = @digests[@request.path.sub("#{@prefix}/", "")]
+
+      if filename.respond_to?(:digest_path)
+        filename = filename.digest_path
+      end
+
       url.path = "#{@prefix}/#{filename}"
       headers = { 'Location'      => url.to_s,
                   'Content-Type'  => Rack::Mime.mime_type(::File.extname(filename)),

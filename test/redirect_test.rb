@@ -92,6 +92,19 @@ class TestRedirect < Test::Unit::TestCase
     Sprockets::Redirect.manifest = old_manifest
   end
 
+  def test_setting_sprockets
+    require 'sprockets'
+    sprockets_env = Sprockets::Environment.new
+    sprockets_env.append_path "test/fixtures/assets"
+
+    app_js_digest_path = sprockets_env.index["application.js"].digest_path
+
+    build_app(:digests => nil, :manifest => nil, :sprockets => sprockets_env.index)
+
+    get "http://example.org/assets/application.js"
+    assert_equal "http://example.org/assets/#{app_js_digest_path}",
+      last_response.headers['Location']
+  end
 
   def test_set_enabled_to_false
     old_enabled = Sprockets::Redirect.enabled

@@ -5,8 +5,9 @@ module Sprockets
     initializer "my_railtie.configure_rails_initialization" do |app|
       assets_enabled = ::Rails.configuration.assets.enabled || defined?(Sprockets)
       if assets_enabled && !::Rails.configuration.assets.compile && ::Rails.configuration.assets.digest
-        app.middleware.insert_before Rack::Runtime, Sprockets::Redirect, :digests => ::Rails.application.assets,
-                                                                      :prefix  => ::Rails.configuration.assets.prefix
+        app.middleware.insert_before Rack::Runtime, Sprockets::Redirect, :digests => ::Rails.configuration.assets.digests,
+                                                                      :prefix  => ::Rails.configuration.assets.prefix,
+                                                                      :sprockets => ::Rails.application.assets
       end
     end
   end
