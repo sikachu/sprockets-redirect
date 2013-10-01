@@ -39,7 +39,7 @@ module Sprockets
 
     def initialize(app, options = {})
       @app = app
-      @digests = options[:digests] || []
+      @digests = options[:digests] || nil
       @prefix = options[:prefix] || "/assets"
       if manifest = options[:manifest] || self.class.manifest
         @digests = YAML.load_file manifest
@@ -47,7 +47,7 @@ module Sprockets
     end
 
     def call(env)
-      if self.class.enabled && !@digests.empty? && asset_match?(env)
+      if self.class.enabled && @digests.present? && asset_match?(env)
         redirect_to_digest_version(env)
       else
         @app.call(env)
@@ -59,13 +59,13 @@ module Sprockets
     # This will returns true if a requested path is matched in the digests hash
     def asset_match?(env)
       @request = Rack::Request.new(env)
-      @request.path.match(/^#{@prefix}/) && @digests.has_key?(@request.path.sub(/^#{@prefix}\//, ""))
+      @request.path.match(/^#{@prefix}/) && @digests[@request.path.sub(/^#{@prefix}\//, "")]
     end
 
     # Sends a redirect header back to browser
     def redirect_to_digest_version(env)
       url = URI(@request.url)
-      filename = @digests[@request.path.sub("#{@prefix}/", "")]
+      filename = @digests[@request.path.sub("#{@prefix}/", "")].digest_path
       url.path = "#{@prefix}/#{filename}"
       headers = { 'Location'      => url.to_s,
                   'Content-Type'  => Rack::Mime.mime_type(::File.extname(filename)),
