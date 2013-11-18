@@ -42,7 +42,7 @@ module Sprockets
       @digests = options[:digests] || []
       @prefix = options[:prefix] || "/assets"
       if manifest = options[:manifest] || self.class.manifest
-        @digests = YAML.load_file manifest
+        @digests = YAML.load_file(manifest)['assets']
       end
     end
 
