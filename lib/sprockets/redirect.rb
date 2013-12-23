@@ -41,6 +41,7 @@ module Sprockets
       @app = app
       @digests = options[:digests] || []
       @prefix = options[:prefix] || "/assets"
+      @asset_host = options[:asset_host]
       if manifest = options[:manifest] || self.class.manifest
         @digests = YAML.load_file manifest
       end
@@ -64,7 +65,7 @@ module Sprockets
 
     # Sends a redirect header back to browser
     def redirect_to_digest_version(env)
-      url = URI(@request.url)
+      url = URI(@asset_host || @request.url)
       filename = @digests[@request.path.sub("#{@prefix}/", "")]
       url.path = "#{@prefix}/#{filename}"
       headers = { 'Location'      => url.to_s,
