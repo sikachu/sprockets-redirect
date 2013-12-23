@@ -35,6 +35,7 @@ module Sprockets
     def initialize(app, sprockets_environment, options = {})
       @app = app
       @prefix = options[:prefix] || "/assets"
+      @asset_host = options[:asset_host]
       @environment = sprockets_environment
     end
 
@@ -73,7 +74,7 @@ module Sprockets
 
     # Sends a redirect header back to browser
     def redirect_to_digest_version(env)
-      url = URI(@request.url)
+      url = URI(@asset_host || @request.url)
       url.path = "#{@prefix}/#{digest_path}"
 
       headers = { 'Location'      => url.to_s,

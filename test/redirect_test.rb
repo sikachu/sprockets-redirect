@@ -51,6 +51,14 @@ class TestRedirect < Test::Unit::TestCase
     assert last_response.redirect?
   end
 
+  def test_setting_asset_host
+    build_app(:asset_host => "http://test.cloudfront.com")
+
+    get "http://example.org/assets/application.js"
+    assert_equal "http://test.cloudfront.com/assets/application-1a2b3c4d5e.js",
+      last_response.headers['Location']
+  end
+
   def test_set_enabled_to_false
     old_enabled = Sprockets::Redirect.enabled
     Sprockets::Redirect.enabled = false
