@@ -51,7 +51,7 @@ class IntegrationTest < Test::Unit::TestCase
     end
 
     reset_bundler_environment_variables
-    in_app_dir { run_command "bundle install --local && rake db:migrate" }
+    in_app_dir { run_command "bundle install && rake db:migrate" }
   end
 
   def create_test_file
