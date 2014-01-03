@@ -2,6 +2,7 @@ require 'sprockets/redirect'
 require 'test/unit'
 require 'rack/test'
 require 'active_support'
+require 'mocha/setup'
 
 puts ">> Testing against Rails #{ActiveSupport::VERSION::STRING}"
 
@@ -21,8 +22,8 @@ class TestRedirect < Test::Unit::TestCase
   attr_writer :app
 
   def build_app(options = {})
-    options = {:digests => {'application.js' => 'application-1a2b3c4d5e.js'}}.merge(options)
-    self.app = Sprockets::Redirect.new(default_app, options)
+    @environment = {'application.js' => stub(digest_path: 'application-1a2b3c4d5e.js')}
+    self.app = Sprockets::Redirect.new(default_app, @environment, options)
   end
 
   def test_redirect_matched_assets
@@ -41,16 +42,6 @@ class TestRedirect < Test::Unit::TestCase
     assert last_response.ok?
   end
 
-  def test_setting_digests
-    build_app(:digests => {'foo.css' => 'foo-1a2b3c4d5e.css'})
-    get "http://example.org/assets/application.js"
-    assert last_response.ok?
-
-    get "http://example.org/assets/foo.css"
-    assert_equal "http://example.org/assets/foo-1a2b3c4d5e.css",
-      last_response.headers['Location']
-  end
-
   def test_setting_prefix
     build_app(:prefix => "/hidden_assets")
     get "http://example.org/assets/application.js"
@@ -58,27 +49,6 @@ class TestRedirect < Test::Unit::TestCase
 
     get "http://example.org/hidden_assets/application.js"
     assert last_response.redirect?
-  end
-
-  def test_setting_manifest_on_class_take_precedence
-    old_manifest = Sprockets::Redirect.manifest
-    fixture_file = File.expand_path(File.dirname(__FILE__) + '/fixtures/manifest.yml')
-    Sprockets::Redirect.manifest = fixture_file.to_s
-
-    get "http://example.org/assets/application.js"
-    assert_equal "http://example.org/assets/application-l33t.js",
-      last_response.headers['Location']
-  ensure
-    Sprockets::Redirect.manifest = old_manifest
-  end
-
-  def test_setting_manifest_on_initialize_take_precedence
-    fixture_file = File.expand_path(File.dirname(__FILE__) + '/fixtures/manifest.yml')
-    build_app(:manifest => fixture_file)
-
-    get "http://example.org/assets/application.js"
-    assert_equal "http://example.org/assets/application-l33t.js",
-      last_response.headers['Location']
   end
 
   def test_set_enabled_to_false

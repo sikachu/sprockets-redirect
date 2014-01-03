@@ -2,10 +2,10 @@ require 'sprockets/redirect'
 
 module Sprockets
   class RedirectRailtie < ::Rails::Railtie
-    initializer "my_railtie.configure_rails_initialization" do |app|
-      if ::Rails.configuration.assets.enabled && !::Rails.configuration.assets.compile && ::Rails.configuration.assets.digest
-        app.middleware.insert_before Rack::Lock, Sprockets::Redirect, :digests => ::Rails.configuration.assets.digests,
-                                                                      :prefix  => ::Rails.configuration.assets.prefix
+    initializer "insert_sprockets_redirect_middleware" do |app|
+      if !::Rails.configuration.assets.compile && ::Rails.configuration.assets.digest
+        app.middleware.insert 0, Sprockets::Redirect, ::Rails.application.assets,
+          :prefix => ::Rails.configuration.assets.prefix
       end
     end
   end

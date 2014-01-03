@@ -24,11 +24,6 @@ module Sprockets
   # E-Mail which refers to static assets in the asset pipeline, which might be
   # impossible and impractical for you to use an URL with a digest in it.
   class Redirect
-
-    # Set a path to manifest file, which will be used for lookup
-    class_attribute :manifest
-    self.manifest = nil
-
     # Set this to false to disable middleware's redirection
     class_attribute :enabled
     self.enabled = true
@@ -37,38 +32,52 @@ module Sprockets
     class_attribute :redirect_status
     self.redirect_status = 302
 
-    def initialize(app, options = {})
+    def initialize(app, sprockets_environment, options = {})
       @app = app
-      @digests = options[:digests] || []
       @prefix = options[:prefix] || "/assets"
-      if manifest = options[:manifest] || self.class.manifest
-        @digests = YAML.load_file manifest
-      end
+      @environment = sprockets_environment
     end
 
     def call(env)
-      if self.class.enabled && !@digests.empty? && asset_match?(env)
+      @request = Rack::Request.new(env)
+
+      if should_redirect?
         redirect_to_digest_version(env)
       else
         @app.call(env)
       end
     end
 
-    protected
+    private
+
+    def should_redirect?
+      self.class.enabled && asset_path_matched?
+    end
 
     # This will returns true if a requested path is matched in the digests hash
-    def asset_match?(env)
-      @request = Rack::Request.new(env)
-      @request.path.match(/^#{@prefix}/) && @digests.has_key?(@request.path.sub(/^#{@prefix}\//, ""))
+    def asset_path_matched?
+      @request.path.start_with?(@prefix) && asset_exists?
+    end
+
+    def asset_exists?
+      @environment[logical_path]
+    end
+
+    def logical_path
+      @request.path.sub(/^#{@prefix}\//, "")
+    end
+
+    def digest_path
+      @environment[logical_path].digest_path
     end
 
     # Sends a redirect header back to browser
     def redirect_to_digest_version(env)
       url = URI(@request.url)
-      filename = @digests[@request.path.sub("#{@prefix}/", "")]
-      url.path = "#{@prefix}/#{filename}"
+      url.path = "#{@prefix}/#{digest_path}"
+
       headers = { 'Location'      => url.to_s,
-                  'Content-Type'  => Rack::Mime.mime_type(::File.extname(filename)),
+                  'Content-Type'  => Rack::Mime.mime_type(::File.extname(digest_path)),
                   'Pragma'        => 'no-cache',
                   'Cache-Control' => 'no-cache; max-age=0' }
       [self.class.redirect_status, headers, [redirect_message(url.to_s)]]

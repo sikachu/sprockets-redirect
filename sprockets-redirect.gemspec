@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport', '>= 3.1.0'
   s.add_development_dependency 'appraisal', '>= 1.0.0.beta2'
   s.add_development_dependency 'bundler'
+  s.add_development_dependency 'mocha'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rails'
