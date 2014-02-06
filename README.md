@@ -35,7 +35,7 @@ Insert this line into your Gemfile:
 Usage
 -----
 
-This middleware will be enabled by default if you set `config.assets.compile = false` and `config.assets.digest = true` in your configuration file. It will automatically retrieve your asset prefix and the list of your digests automatically from Rails.
+This middleware will be enabled by default if you set `config.assets.compile = false` and `config.assets.digest = true` in your configuration file. It will automatically retrieve the asset prefix, asset host, and the list of your digests from Rails.
 
 You could also config this middle ware at a class level, or at middleware initialization.
 
@@ -64,6 +64,7 @@ These configurations are configured via an option hash:
 * `:digests` - Set a hash used for file name lookup. This will be default to Rails' manifest at `Rails.configuration.assets.digests`.
 * `:prefix` - Set a path prefix of your assets file. This will be default to `Rails.configuration.assets.prefix` (usually at `/assets`.)
 * `:manifest` - Set a path to your own manifest file to use for lookup. This will override both `:digest` hash and `Sprockets::Redirect.manifest` setting.
+* `:asset_host` - Set the name of the host to use when serving assets. This is useful if you want your server to redirect to assets that are hosted on a CDN.
 
 You can swap out the middleware inserted automatically by the gem by using `config.middleware.swap` in your configuration file:
 
