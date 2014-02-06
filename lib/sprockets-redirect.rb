@@ -5,7 +5,8 @@ module Sprockets
     initializer "insert_sprockets_redirect_middleware" do |app|
       if !::Rails.configuration.assets.compile && ::Rails.configuration.assets.digest
         app.middleware.insert 0, Sprockets::Redirect, ::Rails.application.assets,
-          :prefix => ::Rails.configuration.assets.prefix
+          :prefix => ::Rails.configuration.assets.prefix,
+          :asset_host => ::Rails.configuration.action_controller.asset_host
       end
     end
   end
