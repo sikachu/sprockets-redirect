@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name      = 'sprockets-redirect'
-  s.version   = '0.2.0'
-  s.date      = '2014-01-04'
+  s.version   = '0.3.0'
+  s.date      = '2014-12-30'
 
   s.homepage    = "https://github.com/sikachu/sprockets-redirect"
   s.summary     = "Redirect assets with no digest request to a filename with digest version."
