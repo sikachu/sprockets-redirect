@@ -9,5 +9,9 @@ gemfile:
   - gemfiles/rails_3_2.gemfile
   - gemfiles/rails_4_0.gemfile
 
+matrix:
+  allow_failures:
+    - rvm: jruby-19mode
+
 before_install: "gem install bundler"
 script: "bundle exec rake test"
