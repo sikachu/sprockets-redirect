@@ -48,6 +48,7 @@ class IntegrationTest < Test::Unit::TestCase
     File.open(gemfile_path, 'a') do |f|
       f.puts
       f.puts 'gem "sprockets-redirect", :path => "../../"'
+      f.puts 'gem "test-unit"'
     end
 
     reset_bundler_environment_variables
