@@ -22,7 +22,10 @@ class TestRedirect < Test::Unit::TestCase
   attr_writer :app
 
   def build_app(options = {})
-    @environment = {'application.js' => stub(digest_path: 'application-1a2b3c4d5e.js')}
+    @environment = {
+      'application.js' => stub(digest_path: 'application-1a2b3c4d5e.js'),
+      'another-application.js' => stub(digest_path: 'another-application-1a2b3c4d5e.js')
+    }
     self.app = Sprockets::Redirect.new(default_app, @environment, options)
   end
 
@@ -52,10 +55,50 @@ class TestRedirect < Test::Unit::TestCase
   end
 
   def test_setting_asset_host
-    build_app(:asset_host => "http://test.cloudfront.com")
+    build_app(:asset_host => "http://test.cloudfront.net")
 
     get "http://example.org/assets/application.js"
-    assert_equal "http://test.cloudfront.com/assets/application-1a2b3c4d5e.js",
+    assert_equal "http://test.cloudfront.net/assets/application-1a2b3c4d5e.js",
+      last_response.headers['Location']
+  end
+
+  def test_setting_asset_host_without_protocol
+    build_app(:asset_host => "test.cloudfront.net")
+
+    get "http://example.org/assets/application.js"
+    assert_equal "http://test.cloudfront.net/assets/application-1a2b3c4d5e.js",
+      last_response.headers['Location']
+  end
+
+  def test_setting_asset_host_proc
+    build_app(:asset_host => proc { |source, request|
+      if source == "application.js"
+        "http://test.cloudfront.net"
+      end
+    })
+
+    get "http://example.org/assets/application.js"
+    assert_equal "http://test.cloudfront.net/assets/application-1a2b3c4d5e.js",
+      last_response.headers['Location']
+
+    get "http://example.org/assets/another-application.js"
+    assert_equal "http://example.org/assets/another-application-1a2b3c4d5e.js",
+      last_response.headers['Location']
+  end
+
+  def test_setting_asset_host_proc_without_protocol
+    build_app(:asset_host => proc { |source, request|
+      if source == "application.js"
+        "test.cloudfront.net"
+      end
+    })
+
+    get "http://example.org/assets/application.js"
+    assert_equal "http://test.cloudfront.net/assets/application-1a2b3c4d5e.js",
+      last_response.headers['Location']
+
+    get "http://example.org/assets/another-application.js"
+    assert_equal "http://example.org/assets/another-application-1a2b3c4d5e.js",
       last_response.headers['Location']
   end
 
