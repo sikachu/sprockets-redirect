@@ -1,8 +1,10 @@
 rvm:
-  - 1.9.3
-  - 2.0
-  - 2.1
-  - 2.2
+  - 1.9.3-p551
+  - 2.0.0-p648
+  - 2.1.8
+  - 2.2.4
+  - 2.3.0
+  - ruby-head
   - jruby-19mode
 
 gemfile:
@@ -11,10 +13,20 @@ gemfile:
   - gemfiles/rails_4_0.gemfile
   - gemfiles/rails_4_1.gemfile
   - gemfiles/rails_4_2.gemfile
+  - gemfiles/rails_5_0.gemfile
 
 matrix:
+  fast_finish: true
+  exclude:
+    - rvm: 1.9.3-p551
+      gemfile: gemfiles/rails_5_0.gemfile
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/rails_5_0.gemfile
+    - rvm: 2.1.8
+      gemfile: gemfiles/rails_5_0.gemfile
   allow_failures:
     - rvm: jruby-19mode
+    - rvm: ruby-head
 
 before_install: "gem install bundler"
 script: "bundle exec rake test"
