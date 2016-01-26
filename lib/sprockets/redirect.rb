@@ -24,8 +24,6 @@ module Sprockets
   # E-Mail which refers to static assets in the asset pipeline, which might be
   # impossible and impractical for you to use an URL with a digest in it.
   class Redirect
-    URI_REGEXP = %r{^[-a-z]+://|^(?:cid|data):|^//}i
-
     # Set this to false to disable middleware's redirection
     class_attribute :enabled
     self.enabled = true
@@ -80,32 +78,25 @@ module Sprockets
 
     # Sends a redirect header back to browser
     def redirect_to_digest_version(env)
-      url = File.join(compute_asset_host, @prefix, digest_path)
+      url = URI(computed_asset_host || @request.url)
+      url.path = "#{@prefix}/#{digest_path}"
 
       headers = { 'Location'      => url.to_s,
                   'Content-Type'  => Rack::Mime.mime_type(::File.extname(digest_path)),
                   'Pragma'        => 'no-cache',
                   'Cache-Control' => 'no-cache; max-age=0' }
 
-      [self.class.redirect_status, headers, [redirect_message(url)]]
+      [self.class.redirect_status, headers, [redirect_message(url.to_s)]]
     end
 
-    def compute_asset_host
-      host = @asset_host
-
-      if host.respond_to?(:call)
-        arity = host.respond_to?(:arity) ? host.arity : host.method(:call).arity
-        args = [logical_path]
-        args << @request if @request && (arity > 1 || arity < 0)
-        host = host.call(*args)
-      elsif host =~ /%d/
-        host = host % (Zlib.crc32(source) % 4)
+    def computed_asset_host
+      if @asset_host.respond_to?(:call)
+        host = @asset_host.call(@request)
+      else
+        host = @asset_host
       end
 
-      host ||= @request.base_url if @request
-      return unless host
-
-      if host =~ URI_REGEXP
+      if host.nil? || host =~ %r(^https?://)
         host
       else
         "#{@request.scheme}://#{host}"

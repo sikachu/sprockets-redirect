@@ -71,11 +71,13 @@ class TestRedirect < Test::Unit::TestCase
   end
 
   def test_setting_asset_host_proc
-    build_app(:asset_host => proc { |source, request|
-      if source == "application.js"
-        "http://test.cloudfront.net"
+    build_app(
+      :asset_host => Proc.new do |request|
+        if request.path.end_with?("/application.js")
+          "http://test.cloudfront.net"
+        end
       end
-    })
+    )
 
     get "http://example.org/assets/application.js"
     assert_equal "http://test.cloudfront.net/assets/application-1a2b3c4d5e.js",
@@ -87,11 +89,13 @@ class TestRedirect < Test::Unit::TestCase
   end
 
   def test_setting_asset_host_proc_without_protocol
-    build_app(:asset_host => proc { |source, request|
-      if source == "application.js"
-        "test.cloudfront.net"
+    build_app(
+      :asset_host => Proc.new do |request|
+        if request.path.end_with?("/application.js")
+          "test.cloudfront.net"
+        end
       end
-    })
+    )
 
     get "http://example.org/assets/application.js"
     assert_equal "http://test.cloudfront.net/assets/application-1a2b3c4d5e.js",
