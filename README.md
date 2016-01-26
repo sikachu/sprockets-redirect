@@ -64,7 +64,15 @@ These configurations are configured via an option hash:
 * `:digests` - Set a hash used for file name lookup. This will be default to Rails' manifest at `Rails.configuration.assets.digests`.
 * `:prefix` - Set a path prefix of your assets file. This will be default to `Rails.configuration.assets.prefix` (usually at `/assets`.)
 * `:manifest` - Set a path to your own manifest file to use for lookup. This will override both `:digest` hash and `Sprockets::Redirect.manifest` setting.
-* `:asset_host` - Set the name of the host to use when serving assets. This is useful if you want your server to redirect to assets that are hosted on a CDN.
+* `:asset_host` - Set the name of the host to use when serving assets. This is useful if you want your server to redirect to assets that are hosted on a CDN. You can also passing a `Proc` object which will be called on every asset requests to determine the host for that request:
+
+        config.middleware.swap Sprockets::Redirect,
+          Sprockets::Redirect,
+          :asset_host => Proc.new do |request|
+              if request.path =~ /\.min\.(js|css)\z/
+                "cdn.example.com"
+              end
+            end
 
 You can swap out the middleware inserted automatically by the gem by using `config.middleware.swap` in your configuration file:
 
