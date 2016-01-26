@@ -69,7 +69,11 @@ module Sprockets
     end
 
     def digest_path
-      @environment[logical_path].digest_path
+      if @environment[logical_path].respond_to?(:digest_path)
+        @environment[logical_path].digest_path
+      else
+        @environment[logical_path]
+      end
     end
 
     # Sends a redirect header back to browser

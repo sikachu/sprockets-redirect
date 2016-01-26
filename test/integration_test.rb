@@ -12,6 +12,7 @@ class IntegrationTest < Test::Unit::TestCase
     create_rails_app
     append_gemfile
     create_test_file
+    precompile_assets
     assert_middleware_injection
     assert_asset_redirection
   end
@@ -49,6 +50,13 @@ class IntegrationTest < Test::Unit::TestCase
       f.puts
       f.puts 'gem "sprockets-redirect", :path => "../../"'
       f.puts 'gem "test-unit"'
+
+      begin
+        require "sprockets/rails/version"
+        f.puts %(gem "sprockets-rails", "#{Sprockets::Rails::VERSION}")
+      rescue LoadError
+        # Unable to determine Sprockets::Rails version, so we just ignore it.
+      end
     end
 
     reset_bundler_environment_variables
@@ -78,6 +86,10 @@ class IntegrationTest < Test::Unit::TestCase
         sprockets_redirect_test
       end
     end
+  end
+
+  def precompile_assets
+    in_app_dir { run_command "bundle exec rake assets:precompile" }
   end
 
   def assert_middleware_injection
