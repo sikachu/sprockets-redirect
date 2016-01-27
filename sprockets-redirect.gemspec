@@ -1,15 +1,15 @@
 Gem::Specification.new do |s|
   s.name        = "sprockets-redirect"
-  s.version     = "0.3.0"
+  s.version     = "1.0.0"
   s.authors     = ["Prem Sichanugrist"]
   s.email       = "s@sikac.hu"
 
   s.homepage    = "https://github.com/sikachu/sprockets-redirect"
   s.summary     = "Redirect assets with no digest request to a filename with digest version."
   s.description = <<-EOS
-    Rack middleware which will look up your `public/assets/manifest.yml` and
-    redirect a request with no digest in the file name to the version with
-    digest in the file name.
+    Rack middleware which will look up your assets manifest file and redirect a
+    request with no digest in the file name to the version with digest in the
+    file name.
   EOS
   s.license           = "MIT"
 
