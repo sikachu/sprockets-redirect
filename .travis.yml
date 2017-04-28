@@ -16,6 +16,7 @@ gemfile:
   - gemfiles/rails_4_2.gemfile
   - gemfiles/rails_4_2_sprockets_2.gemfile
   - gemfiles/rails_5_0.gemfile
+  - gemfiles/rails_5_1.gemfile
 
 matrix:
   fast_finish: true
@@ -26,6 +27,12 @@ matrix:
       gemfile: gemfiles/rails_5_0.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/rails_5_0.gemfile
+    - rvm: 1.9.3-p551
+      gemfile: gemfiles/rails_5_1.gemfile
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/rails_5_1.gemfile
+    - rvm: 2.1.10
+      gemfile: gemfiles/rails_5_1.gemfile
   allow_failures:
     - rvm: jruby-19mode
     - rvm: ruby-head
