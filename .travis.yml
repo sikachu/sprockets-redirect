@@ -24,74 +24,74 @@ matrix:
   fast_finish: true
   exclude:
     # Rails 3.1 tested against Ruby 1.8.7 -> 1.9.3
-    - gemfile: &rails3.1
-      rvm: &ruby2.0
-    - gemfile: &rails3.1
-      rvm: &ruby2.1
-    - gemfile: &rails3.1
-      rvm: &ruby2.2
-    - gemfile: &rails3.1
-      rvm: &ruby2.3
-    - gemfile: &rails3.1
-      rvm: &ruby2.4
-    - gemfile: &rails3.1
-      rvm: &ruby2.5
-    - gemfile: &rails3.1
-      rvm: &ruby-head
+    - gemfile: *rails3.1
+      rvm: *ruby2.0
+    - gemfile: *rails3.1
+      rvm: *ruby2.1
+    - gemfile: *rails3.1
+      rvm: *ruby2.2
+    - gemfile: *rails3.1
+      rvm: *ruby2.3
+    - gemfile: *rails3.1
+      rvm: *ruby2.4
+    - gemfile: *rails3.1
+      rvm: *ruby2.5
+    - gemfile: *rails3.1
+      rvm: *ruby-head
     # Rails 3.2 tested against Ruby 1.9.3 -> 2.2
-    - gemfile: &rails3.2
-      rvm: &ruby2.3
-    - gemfile: &rails3.2
-      rvm: &ruby2.4
-    - gemfile: &rails3.2
-      rvm: &ruby2.5
-    - gemfile: &rails3.2
-      rvm: &ruby-head
+    - gemfile: *rails3.2
+      rvm: *ruby2.3
+    - gemfile: *rails3.2
+      rvm: *ruby2.4
+    - gemfile: *rails3.2
+      rvm: *ruby2.5
+    - gemfile: *rails3.2
+      rvm: *ruby-head
     # Rails 4.0 tested against Ruby 1.9.3 -> 2.2
-    - gemfile: &rails4.0
-      rvm: &ruby2.3
-    - gemfile: &rails4.0
-      rvm: &ruby2.4
-    - gemfile: &rails4.0
-      rvm: &ruby2.5
-    - gemfile: &rails4.0
-      rvm: &ruby-head
+    - gemfile: *rails4.0
+      rvm: *ruby2.3
+    - gemfile: *rails4.0
+      rvm: *ruby2.4
+    - gemfile: *rails4.0
+      rvm: *ruby2.5
+    - gemfile: *rails4.0
+      rvm: *ruby-head
     # Rails 4.1 tested against Ruby 1.9.3 -> 2.3
-    - gemfile: &rails4.1
-      rvm: &ruby2.4
-    - gemfile: &rails4.1
-      rvm: &ruby2.5
-    - gemfile: &rails4.1
-      rvm: &ruby-head
+    - gemfile: *rails4.1
+      rvm: *ruby2.4
+    - gemfile: *rails4.1
+      rvm: *ruby2.5
+    - gemfile: *rails4.1
+      rvm: *ruby-head
     # Rails 4.2 tested against Ruby 1.9.3 -> 2.4
-    - gemfile: &rails4.2
-      rvm: &ruby2.5
-    - gemfile: &rails4.2
-      rvm: &ruby-head
+    - gemfile: *rails4.2
+      rvm: *ruby2.5
+    - gemfile: *rails4.2
+      rvm: *ruby-head
     # Rails 5.0 tested against Ruby 2.2 -> 2.4
-    - gemfile: &rails5.0
-      rvm: &ruby1.9
-    - gemfile: &rails5.0
-      rvm: &ruby2.0
-    - gemfile: &rails5.0
-      rvm: &ruby2.1
+    - gemfile: *rails5.0
+      rvm: *ruby1.9
+    - gemfile: *rails5.0
+      rvm: *ruby2.0
+    - gemfile: *rails5.0
+      rvm: *ruby2.1
     # Rails 5.1 tested against Ruby 2.2 -> 2.4
-    - gemfile: &rails5.1
-      rvm: &ruby1.9
-    - gemfile: &rails5.1
-      rvm: &ruby2.0
-    - gemfile: &rails5.1
-      rvm: &ruby2.1
+    - gemfile: *rails5.1
+      rvm: *ruby1.9
+    - gemfile: *rails5.1
+      rvm: *ruby2.0
+    - gemfile: *rails5.1
+      rvm: *ruby2.1
     # Rails 5.2 tested against Ruby 2.2 -> 2.5
-    - gemfile: &rails5.2
-      rvm: &ruby1.9
-    - gemfile: &rails5.2
-      rvm: &ruby2.0
-    - gemfile: &rails5.2
-      rvm: &ruby2.1
+    - gemfile: *rails5.2
+      rvm: *ruby1.9
+    - gemfile: *rails5.2
+      rvm: *ruby2.0
+    - gemfile: *rails5.2
+      rvm: *ruby2.1
   allow_failures:
-    - rvm: &jruby
-    - rvm: &ruby-head
+    - rvm: *jruby
+    - rvm: *ruby-head
 
 before_install: "gem install bundler"
 script: "bundle exec rake test"
